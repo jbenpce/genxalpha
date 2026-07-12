@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 480" role="img" aria-label="genXalpha">
+  <text x="10" y="332" font-family="Georgia, 'Times New Roman', serif" font-size="230" fill="#f2efe9">gen</text>
+  <g transform="translate(520 0)">
+    <g stroke-linecap="round" fill="none">
+      <path d="M 120 118 L 268 248" stroke="#e2582b" stroke-width="44"/>
+      <path d="M 92 178 L 350 400" stroke="#f0a23c" stroke-width="44"/>
+      <path d="M 118 430 L 404 128" stroke="#2f9e60" stroke-width="46"/>
+      <path d="M 168 100 L 430 420" stroke="#2c4756" stroke-width="50"/>
+    </g>
+    <text x="438" y="146" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="bold" font-size="140" fill="#97c05c">&#945;</text>
+  </g>
+</svg>

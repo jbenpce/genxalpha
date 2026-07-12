@@ -19,7 +19,8 @@ const links = [
 <header class="site-header">
   <div class="container site-header__inner">
     <a href={withBase('')} class="brand" aria-label="genXalpha — home">
-      gen<span class="brand__x">X</span>alpha
+      <img class="brand__mark" src={withBase('favicon.svg')} alt="" width="560" height="480" />
+      <span>gen<span class="brand__x">X</span>alpha</span>
     </a>
 
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true" />
@@ -65,11 +66,18 @@ const links = [
     min-height: 4.75rem;
   }
   .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     font-family: var(--font-display);
     font-size: 1.45rem;
     font-weight: 500;
     letter-spacing: 0.01em;
     color: var(--paper);
+  }
+  .brand__mark {
+    width: 2rem;
+    height: auto;
   }
   .brand:hover { color: var(--paper); }
   .brand__x {

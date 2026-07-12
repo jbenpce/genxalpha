@@ -58,7 +58,9 @@ from the brand's public footprint (Substack, search snippets). Items to
 confirm against the original:
 
 - [ ] Compare copy/sections against the live genxalpha.xyz and adjust
-- [ ] Drop in the real genXalpha logo artwork (currently a typographic mark)
+- [ ] The logo (`public/logo.svg`, favicon = the X+α mark without "gen") is an
+      SVG recreation of the original artwork — swap in the original file if
+      pixel-perfect fidelity is wanted
 - [ ] Confirm About-page career details ([Placeholder] notes in `about.astro`)
 - [ ] Refresh the essay list in `writing.astro` (or wire up the Substack RSS
       feed at build time)

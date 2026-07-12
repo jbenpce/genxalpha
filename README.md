@@ -58,9 +58,10 @@ from the brand's public footprint (Substack, search snippets). Items to
 confirm against the original:
 
 - [ ] Compare copy/sections against the live genxalpha.xyz and adjust
-- [ ] The logo (`public/logo.svg`, favicon = the X+α mark without "gen") is an
-      SVG recreation of the original artwork — swap in the original file if
-      pixel-perfect fidelity is wanted
+- [x] Logo: the original artwork lives in `public/` (`logo with gen.png` for
+      the hero lockup, `favicon.png`/`logo.png` for the X+α mark; favicon
+      sizes and the OG image are generated from these). Higher-resolution
+      exports would sharpen the hero further if available.
 - [ ] Confirm About-page career details ([Placeholder] notes in `about.astro`)
 - [ ] Refresh the essay list in `writing.astro` (or wire up the Substack RSS
       feed at build time)

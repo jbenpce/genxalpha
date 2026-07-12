@@ -51,14 +51,16 @@ const featured = [
   <section class="hero section--dark">
     <div class="container hero__inner">
       <h1 class="hero__wordmark">
-        <img
-          class="hero__logo"
-          src={asset('logo.svg')}
-          alt="genXalpha"
-          width="1080"
-          height="480"
-          fetchpriority="high"
-        />
+        <span class="hero__plate">
+          <img
+            class="hero__logo"
+            src={asset('logo with gen.png')}
+            alt="genXalpha"
+            width="142"
+            height="110"
+            fetchpriority="high"
+          />
+        </span>
       </h1>
       <p class="tagline hero__tagline">Unlocking potential across all generations</p>
       <p class="lede hero__lede">
@@ -160,10 +162,19 @@ const featured = [
     opacity: 0;
     animation: heroIn 1.6s ease-out 0.15s forwards;
   }
+  /* The artwork carries its own near-white plate, so present it on a matching
+     cream card against the dark hero. */
+  .hero__plate {
+    display: inline-block;
+    background: #fffef8;
+    border-radius: 14px;
+    padding: clamp(1.25rem, 3vw, 2rem) clamp(1.75rem, 4vw, 2.75rem);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+  }
   .hero__logo {
-    width: min(34rem, 82vw);
+    width: min(17rem, 62vw);
     height: auto;
-    margin-inline: auto;
+    display: block;
   }
   .hero__tagline { margin-top: 1.75rem; }
   .hero__lede { margin: clamp(1.5rem, 4vw, 2.25rem) auto 0; }

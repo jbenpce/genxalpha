@@ -1,0 +1,88 @@
+---
+const year = new Date().getFullYear();
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+const withBase = (p: string) => `${base}${p}`.replace(/\/{2,}/g, '/');
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="brand">gen<span class="brand__x">X</span>alpha</span>
+      <p class="site-footer__tagline">Unlocking potential across all generations</p>
+    </div>
+
+    <nav class="site-footer__nav" aria-label="Footer">
+      <a href={withBase('')}>Home</a>
+      <a href={withBase('about')}>About</a>
+      <a href={withBase('writing')}>Writing</a>
+      <a href="https://genxalpha.substack.com" target="_blank" rel="noopener">Substack ↗</a>
+      <a href={withBase('privacy-policy')}>Privacy Policy</a>
+    </nav>
+
+    <div class="site-footer__meta">
+      <p>&copy; {year} genXalpha. All rights reserved.</p>
+      <p class="site-footer__disclaimer">
+        Nothing on this website constitutes investment advice, an offer, or a
+        solicitation. Views expressed are the author's own. Do your own research.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink-2);
+    color: var(--muted-dark);
+    padding-block: clamp(3rem, 6vw, 4.5rem);
+    font-size: 0.95rem;
+  }
+  .site-footer__inner {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1.5fr 1fr;
+    align-items: start;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--paper);
+  }
+  .brand__x { color: var(--orange); font-weight: 700; }
+  .site-footer__tagline {
+    margin: 0.75rem 0 0;
+    color: var(--orange);
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    font-size: 0.72rem;
+    font-weight: 400;
+  }
+  .site-footer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .site-footer__nav a {
+    color: var(--muted-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+  .site-footer__nav a:hover { color: var(--orange); }
+  .site-footer__meta {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--line-dark);
+    padding-top: 1.75rem;
+    color: #8b8b8b;
+    font-size: 0.82rem;
+  }
+  .site-footer__meta p { margin: 0 0 0.4rem; }
+  .site-footer__disclaimer { max-width: 60ch; }
+
+  @media (max-width: 560px) {
+    .site-footer__inner { grid-template-columns: 1fr; }
+  }
+</style>

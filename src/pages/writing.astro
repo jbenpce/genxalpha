@@ -1,0 +1,138 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Essay index — links out to Substack, where the writing lives.
+// NOTE: Keep this list fresh, or swap for the Substack RSS feed at build time.
+const essays = [
+  {
+    title: 'Why AI’s Future Depends on the Grid, Not the Lab',
+    href: 'https://genxalpha.substack.com/p/why-ais-future-depends-on-the-grid',
+    tag: 'Energy & AI',
+    blurb: 'AI’s bottleneck isn’t model quality — it’s electricity, and how intelligently we use the grid we already have.',
+  },
+  {
+    title: 'Greenspar.x Powers Up',
+    href: 'https://genxalpha.substack.com/p/greensparx-powers-up',
+    tag: 'Energy',
+    blurb: 'Battery energy storage in Italy: grid-balancing capacity and the machinery of the renewables transition.',
+  },
+  {
+    title: 'Bitcoin: the Apex Asset',
+    href: 'https://genxalpha.substack.com/p/bitcoin-the-apex-asset',
+    tag: 'Bitcoin',
+    blurb: 'Why an asset secured by vast amounts of electricity is a feature, not a bug.',
+  },
+  {
+    title: 'Bitcoin to $100k',
+    href: 'https://genxalpha.substack.com/p/bitcoin-to-100k',
+    tag: 'Bitcoin',
+    blurb: 'The path to six figures — and what it says about money, energy and time.',
+  },
+  {
+    title: 'Behold the Foolish ECB',
+    href: 'https://genxalpha.substack.com/p/behold-the-foolish-ecb',
+    tag: 'Macro',
+    blurb: 'Central banking meets sound money — and comes off second best.',
+  },
+  {
+    title: 'Operation Chokepoint 2.0',
+    href: 'https://genxalpha.substack.com/p/operation-chokepoint-20',
+    tag: 'Policy',
+    blurb: 'How regulators quietly squeezed crypto out of the banking system.',
+  },
+  {
+    title: 'Humanity’s Poison: Judgement',
+    href: 'https://genxalpha.substack.com/p/humanitys-poison-judgement',
+    tag: 'Philosophy',
+    blurb: 'On judgement, potential and the habits of mind that hold us back.',
+  },
+  {
+    title: 'A New Beginning, A New Substack',
+    href: 'https://genxalpha.substack.com/p/a-new-substack-a-new-beginning',
+    tag: 'genXalpha',
+    blurb: 'Where genXalpha came from, and where it’s going.',
+  },
+];
+---
+
+<Layout
+  title="Writing — genXalpha"
+  description="Essays on energy, AI, bitcoin, markets and philosophy from genXalpha by John Bottomley."
+>
+  <section class="section section--dark">
+    <div class="container">
+      <p class="eyebrow">Writing</p>
+      <h1>Essays.</h1>
+      <p class="lede">
+        Everything is published first on Substack — free to read, free to
+        subscribe. A selection is indexed here.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container">
+      <ul class="essays">
+        {essays.map((e) => (
+          <li class="essay">
+            <a href={e.href} target="_blank" rel="noopener">
+              <span class="essay__tag">{e.tag}</span>
+              <span class="essay__main">
+                <span class="essay__title">{e.title}</span>
+                <span class="essay__blurb">{e.blurb}</span>
+              </span>
+              <span class="essay__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="essays__more">
+        <a class="btn btn--solid" href="https://genxalpha.substack.com/archive" target="_blank" rel="noopener">
+          Full archive on Substack
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .essays {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line-dark);
+  }
+  .essay a {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--line-dark);
+    color: var(--paper);
+  }
+  .essay a:hover .essay__title { color: var(--orange); }
+  .essay__tag {
+    flex: 0 0 8.5rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    color: var(--orange-dark);
+  }
+  .essay__main { display: flex; flex-direction: column; gap: 0.35rem; }
+  .essay__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    transition: color 0.2s ease;
+  }
+  .essay__blurb { color: var(--muted); font-size: 0.95rem; }
+  .essay__arrow { margin-left: auto; color: var(--muted-dark); }
+  .essays__more { margin-top: 3rem; }
+
+  @media (max-width: 720px) {
+    .essay a { flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+    .essay__tag { flex-basis: 100%; }
+    .essay__arrow { display: none; }
+  }
+</style>

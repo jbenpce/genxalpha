@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const updated = 'July 2026'; // NOTE: [Placeholder] set the real last-updated date.
+---
+
+<Layout
+  title="Privacy Policy — genXalpha"
+  description="How genxalpha.xyz handles cookies, analytics and personal data."
+>
+  <section class="section section--dark">
+    <div class="container policy">
+      <p class="eyebrow">Legal</p>
+      <h1>Privacy Policy</h1>
+      <p class="policy__updated">Last updated: {updated}</p>
+
+      <h2>Overview</h2>
+      <p>
+        genxalpha.xyz is a static informational website. We collect as little
+        data as possible and sell none of it.
+      </p>
+
+      <h2>Cookies &amp; analytics</h2>
+      <p>
+        This site may use cookies to analyze website traffic and optimize your
+        experience. Aggregated, anonymized usage data helps us understand which
+        pages are read and how the site performs. You can block cookies in your
+        browser settings without losing access to any content.
+      </p>
+
+      <h2>Personal information</h2>
+      <p>
+        We do not ask for, store or process personal information on this site.
+        If you subscribe to the genXalpha newsletter, your email address is
+        handled by Substack under
+        <a href="https://substack.com/privacy" target="_blank" rel="noopener">Substack's privacy policy</a>.
+      </p>
+
+      <h2>Third-party links</h2>
+      <p>
+        Essays and links on this site point to external services (Substack,
+        social platforms). Their privacy practices are their own; review their
+        policies when you visit.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about this policy? Reach out via
+        <a href="https://genxalpha.substack.com" target="_blank" rel="noopener">Substack</a>.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .policy { max-width: 46rem; }
+  .policy h2 { margin-top: 2.5rem; font-size: 1.35rem; }
+  .policy__updated {
+    color: var(--muted-dark);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>

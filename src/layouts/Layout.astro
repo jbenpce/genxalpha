@@ -1,0 +1,79 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'genXalpha — Unlocking potential across all generations',
+  description =
+    'genXalpha is the home of John Bottomley’s writing and thinking on energy, AI, bitcoin, markets and philosophy — unlocking potential across all generations.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const rawBase = import.meta.env.BASE_URL;
+const baseWithSlash = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+const asset = (f: string) => `${baseWithSlash}${f}`.replace(/\/{2,}/g, '/');
+const favicon = asset('favicon.svg');
+const favicon32 = asset('favicon-32.png');
+const appleTouchIcon = asset('apple-touch-icon.png');
+const ogImagePath = `${baseWithSlash}og-image.png`.replace(/\/{2,}/g, '/');
+const ogImage = new URL(ogImagePath, Astro.site ?? Astro.url).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href={favicon} />
+    <link rel="icon" type="image/png" sizes="32x32" href={favicon32} />
+    <link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon} />
+
+    <!-- Fonts: Space Grotesk (display) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <style>
+      .skip-link {
+        position: absolute;
+        left: -999px;
+        top: 0;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 0.75rem 1.25rem;
+        z-index: 100;
+      }
+      .skip-link:focus { left: 0; }
+    </style>
+  </body>
+</html>

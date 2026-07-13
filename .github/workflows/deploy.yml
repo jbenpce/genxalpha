@@ -7,6 +7,10 @@ on:
   push:
     branches:
       - main
+  # Daily rebuild so the essay lists pick up new Substack posts (the RSS
+  # feed is fetched at build time — see src/lib/substack.ts).
+  schedule:
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 # Permissions required for the deploy-pages action.

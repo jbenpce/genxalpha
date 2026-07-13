@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getPosts, formatDate } from '../lib/substack';
 
 // Base-aware asset paths (root + GitHub Pages sub-path preview).
 const rawBase = import.meta.env.BASE_URL;
@@ -26,24 +27,9 @@ const pillars = [
   },
 ];
 
-// Featured essays — link out to Substack, where the writing lives.
-const featured = [
-  {
-    title: 'Why AI’s Future Depends on the Grid, Not the Lab',
-    href: 'https://genxalpha.substack.com/p/why-ais-future-depends-on-the-grid',
-    tag: 'Energy & AI',
-  },
-  {
-    title: 'Bitcoin: the Apex Asset',
-    href: 'https://genxalpha.substack.com/p/bitcoin-the-apex-asset',
-    tag: 'Bitcoin',
-  },
-  {
-    title: 'Greenspar.x Powers Up',
-    href: 'https://genxalpha.substack.com/p/greensparx-powers-up',
-    tag: 'Energy',
-  },
-];
+// Latest essays from the Substack feed (fetched at build time).
+const { posts } = await getPosts();
+const featured = posts.slice(0, 3);
 ---
 
 <Layout>
@@ -52,12 +38,13 @@ const featured = [
     <div class="container hero__inner">
       <h1 class="hero__wordmark">
         <span class="hero__plate">
+          <span class="hero__gen" aria-hidden="true">gen</span>
           <img
             class="hero__logo"
-            src={asset('logo with gen.png')}
+            src={asset('mark.svg')}
             alt="genXalpha"
-            width="142"
-            height="110"
+            width="229"
+            height="187"
             fetchpriority="high"
           />
         </span>
@@ -124,7 +111,7 @@ const featured = [
         {featured.map((f) => (
           <li class="featured__item">
             <a href={f.href} target="_blank" rel="noopener">
-              <span class="featured__tag">{f.tag}</span>
+              <span class="featured__tag">{formatDate(f.date) || 'Substack'}</span>
               <span class="featured__title">{f.title}</span>
               <span class="featured__arrow" aria-hidden="true">→</span>
             </a>
@@ -162,17 +149,26 @@ const featured = [
     opacity: 0;
     animation: heroIn 1.6s ease-out 0.15s forwards;
   }
-  /* The artwork carries its own near-white plate, so present it on a matching
-     cream card against the dark hero. */
+  /* The lockup sits on a cream card (the artwork's native background)
+     against the dark hero: serif "gen" + the traced vector mark. */
   .hero__plate {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2rem);
     background: #fffef8;
     border-radius: 14px;
-    padding: clamp(1.25rem, 3vw, 2rem) clamp(1.75rem, 4vw, 2.75rem);
+    padding: clamp(1.5rem, 3.5vw, 2.5rem) clamp(2rem, 5vw, 3.5rem);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
   }
+  .hero__gen {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+    color: #15181d;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    line-height: 1;
+  }
   .hero__logo {
-    width: min(17rem, 62vw);
+    width: clamp(8rem, 24vw, 13rem);
     height: auto;
     display: block;
   }

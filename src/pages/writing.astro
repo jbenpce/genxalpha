@@ -1,58 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getPosts, formatDate } from '../lib/substack';
 
-// Essay index — links out to Substack, where the writing lives.
-// NOTE: Keep this list fresh, or swap for the Substack RSS feed at build time.
-const essays = [
-  {
-    title: 'Why AI’s Future Depends on the Grid, Not the Lab',
-    href: 'https://genxalpha.substack.com/p/why-ais-future-depends-on-the-grid',
-    tag: 'Energy & AI',
-    blurb: 'AI’s bottleneck isn’t model quality — it’s electricity, and how intelligently we use the grid we already have.',
-  },
-  {
-    title: 'Greenspar.x Powers Up',
-    href: 'https://genxalpha.substack.com/p/greensparx-powers-up',
-    tag: 'Energy',
-    blurb: 'Battery energy storage in Italy: grid-balancing capacity and the machinery of the renewables transition.',
-  },
-  {
-    title: 'Bitcoin: the Apex Asset',
-    href: 'https://genxalpha.substack.com/p/bitcoin-the-apex-asset',
-    tag: 'Bitcoin',
-    blurb: 'Why an asset secured by vast amounts of electricity is a feature, not a bug.',
-  },
-  {
-    title: 'Bitcoin to $100k',
-    href: 'https://genxalpha.substack.com/p/bitcoin-to-100k',
-    tag: 'Bitcoin',
-    blurb: 'The path to six figures — and what it says about money, energy and time.',
-  },
-  {
-    title: 'Behold the Foolish ECB',
-    href: 'https://genxalpha.substack.com/p/behold-the-foolish-ecb',
-    tag: 'Macro',
-    blurb: 'Central banking meets sound money — and comes off second best.',
-  },
-  {
-    title: 'Operation Chokepoint 2.0',
-    href: 'https://genxalpha.substack.com/p/operation-chokepoint-20',
-    tag: 'Policy',
-    blurb: 'How regulators quietly squeezed crypto out of the banking system.',
-  },
-  {
-    title: 'Humanity’s Poison: Judgement',
-    href: 'https://genxalpha.substack.com/p/humanitys-poison-judgement',
-    tag: 'Philosophy',
-    blurb: 'On judgement, potential and the habits of mind that hold us back.',
-  },
-  {
-    title: 'A New Beginning, A New Substack',
-    href: 'https://genxalpha.substack.com/p/a-new-substack-a-new-beginning',
-    tag: 'genXalpha',
-    blurb: 'Where genXalpha came from, and where it’s going.',
-  },
-];
+// Essay index, pulled from the Substack RSS feed at build time (the deploy
+// workflow also rebuilds daily so new posts show up automatically). Falls
+// back to a curated list if the feed is unreachable.
+const { posts } = await getPosts();
 ---
 
 <Layout
@@ -65,7 +18,7 @@ const essays = [
       <h1>Essays.</h1>
       <p class="lede">
         Everything is published first on Substack — free to read, free to
-        subscribe. A selection is indexed here.
+        subscribe. The latest essays are indexed here.
       </p>
     </div>
   </section>
@@ -73,13 +26,13 @@ const essays = [
   <section class="section section--surface">
     <div class="container">
       <ul class="essays">
-        {essays.map((e) => (
+        {posts.map((e) => (
           <li class="essay">
             <a href={e.href} target="_blank" rel="noopener">
-              <span class="essay__tag">{e.tag}</span>
+              <span class="essay__tag">{formatDate(e.date) || 'Substack'}</span>
               <span class="essay__main">
                 <span class="essay__title">{e.title}</span>
-                <span class="essay__blurb">{e.blurb}</span>
+                {e.blurb && <span class="essay__blurb">{e.blurb}</span>}
               </span>
               <span class="essay__arrow" aria-hidden="true">→</span>
             </a>

@@ -1,15 +1,15 @@
 import { defineConfig } from 'astro/config';
 
-// When building for the GitHub Pages preview, the site is served from a
-// sub-path (https://<owner>.github.io/<repo>). The deploy workflow sets
-// GITHUB_PAGES=true so we can apply the correct site/base there while
-// keeping the production (genxalpha.xyz) build at the root.
-const isGitHubPages = process.env.GITHUB_PAGES === 'true';
+// The site is served at the custom domain genxalpha.xyz (root base), both in
+// production and via the GitHub Pages deploy. Note: withastro/action sets
+// GITHUB_PAGES=true during CI builds, so do NOT branch on that env var here —
+// it would silently switch the build to the /genxalpha sub-path base and
+// break every asset URL on the custom domain.
 
 // https://astro.build/config
 export default defineConfig({
-  site: isGitHubPages ? 'https://jbenpce.github.io' : 'https://genxalpha.xyz',
-  base: isGitHubPages ? '/genxalpha' : '/',
+  site: 'https://genxalpha.xyz',
+  base: '/',
   build: {
     inlineStylesheets: 'auto',
   },

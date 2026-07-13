@@ -82,9 +82,16 @@ function pick(item: string, tag: string): string {
 
 export async function getPosts(): Promise<{ posts: Post[]; live: boolean }> {
   try {
+    // Substack's bot protection 403s the default node user-agent, so
+    // present as a regular browser.
     const res = await fetch(FEED_URL, {
       signal: AbortSignal.timeout(15_000),
-      headers: { accept: 'application/rss+xml, application/xml, text/xml' },
+      headers: {
+        accept: 'application/rss+xml, application/xml, text/xml, */*',
+        'user-agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'accept-language': 'en-US,en;q=0.9',
+      },
     });
     if (!res.ok) throw new Error(`feed returned HTTP ${res.status}`);
     const xml = await res.text();

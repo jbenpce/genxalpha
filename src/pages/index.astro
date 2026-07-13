@@ -161,11 +161,14 @@ const featured = posts.slice(0, 3);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
   }
   .hero__gen {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 400;
+    font-family: 'Dancing Script', cursive;
+    font-weight: 500;
     color: #15181d;
-    font-size: clamp(3rem, 9vw, 5.5rem);
+    font-size: clamp(3.4rem, 10vw, 6rem);
     line-height: 1;
+    /* sit the script slightly low against the X, like the original lockup */
+    align-self: flex-end;
+    margin-bottom: clamp(0.2rem, 1vw, 0.6rem);
   }
   .hero__logo {
     width: clamp(8rem, 24vw, 13rem);

@@ -123,21 +123,8 @@ const STRATEGIES: Array<{ name: string; load: () => Promise<Post[]> }> = [
     load: async () => parseFeedXml(await fetchText(FEED_URL, BROWSER_UA)),
   },
   {
-    name: 'direct (feed-reader UA)',
-    load: async () =>
-      parseFeedXml(await fetchText(FEED_URL, 'Mozilla/5.0 (compatible; Feedbin feed-id:1; 1 subscribers)')),
-  },
-  {
-    name: 'allorigins mirror',
-    load: async () =>
-      parseFeedXml(
-        await fetchText(
-          `https://api.allorigins.win/raw?url=${encodeURIComponent(FEED_URL)}`,
-          BROWSER_UA,
-        ),
-      ),
-  },
-  {
+    // Proven to work from GitHub Actions runners (the direct fetch is
+    // blocked there); tried before allorigins, which tends to time out.
     name: 'rss2json mirror',
     load: async () => {
       const body = await fetchText(
@@ -159,9 +146,19 @@ const STRATEGIES: Array<{ name: string; load: () => Promise<Post[]> }> = [
         .filter((p: Post) => p.title && p.href.startsWith('http'));
     },
   },
+  {
+    name: 'allorigins mirror',
+    load: async () =>
+      parseFeedXml(
+        await fetchText(
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(FEED_URL)}`,
+          BROWSER_UA,
+        ),
+      ),
+  },
 ];
 
-export async function getPosts(): Promise<{ posts: Post[]; live: boolean }> {
+async function loadPosts(): Promise<{ posts: Post[]; live: boolean }> {
   for (const s of STRATEGIES) {
     try {
       const posts = await s.load();
@@ -174,6 +171,14 @@ export async function getPosts(): Promise<{ posts: Post[]; live: boolean }> {
   }
   console.warn('[substack] all strategies failed; using fallback list');
   return { posts: FALLBACK_POSTS, live: false };
+}
+
+// Fetch once per build — every page that imports this shares the result.
+let cached: Promise<{ posts: Post[]; live: boolean }> | undefined;
+
+export function getPosts(): Promise<{ posts: Post[]; live: boolean }> {
+  cached ??= loadPosts();
+  return cached;
 }
 
 export function formatDate(d?: Date): string {

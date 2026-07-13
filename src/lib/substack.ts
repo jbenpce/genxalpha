@@ -80,45 +80,100 @@ function pick(item: string, tag: string): string {
   return m ? m[1].trim() : '';
 }
 
-export async function getPosts(): Promise<{ posts: Post[]; live: boolean }> {
-  try {
-    // Substack's bot protection 403s the default node user-agent, so
-    // present as a regular browser.
-    const res = await fetch(FEED_URL, {
-      signal: AbortSignal.timeout(15_000),
-      headers: {
-        accept: 'application/rss+xml, application/xml, text/xml, */*',
-        'user-agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-        'accept-language': 'en-US,en;q=0.9',
-      },
-    });
-    if (!res.ok) throw new Error(`feed returned HTTP ${res.status}`);
-    const xml = await res.text();
+function parseFeedXml(xml: string): Post[] {
+  return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)]
+    .map((m) => m[1])
+    .map((item) => {
+      const pub = pick(item, 'pubDate');
+      return {
+        title: decode(pick(item, 'title')),
+        href: pick(item, 'link'),
+        date: pub ? new Date(pub) : undefined,
+        blurb: decode(pick(item, 'description'))
+          .replace(/<[^>]+>/g, '')
+          .trim()
+          .slice(0, 200),
+      };
+    })
+    .filter((p) => p.title && p.href.startsWith('http'));
+}
 
-    const posts: Post[] = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)]
-      .map((m) => m[1])
-      .map((item) => {
-        const pub = pick(item, 'pubDate');
-        return {
-          title: decode(pick(item, 'title')),
-          href: pick(item, 'link'),
-          date: pub ? new Date(pub) : undefined,
-          blurb: decode(pick(item, 'description'))
+const BROWSER_UA =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
+
+async function fetchText(url: string, ua: string): Promise<string> {
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(15_000),
+    headers: {
+      accept: 'application/rss+xml, application/xml, text/xml, application/json, */*',
+      'user-agent': ua,
+      'accept-language': 'en-US,en;q=0.9',
+    },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.text();
+}
+
+// Substack's bot protection blocks datacenter IPs (including GitHub Actions
+// runners), so try the direct feed first and then public feed mirrors that
+// fetch from their own infrastructure.
+const STRATEGIES: Array<{ name: string; load: () => Promise<Post[]> }> = [
+  {
+    name: 'direct (browser UA)',
+    load: async () => parseFeedXml(await fetchText(FEED_URL, BROWSER_UA)),
+  },
+  {
+    name: 'direct (feed-reader UA)',
+    load: async () =>
+      parseFeedXml(await fetchText(FEED_URL, 'Mozilla/5.0 (compatible; Feedbin feed-id:1; 1 subscribers)')),
+  },
+  {
+    name: 'allorigins mirror',
+    load: async () =>
+      parseFeedXml(
+        await fetchText(
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(FEED_URL)}`,
+          BROWSER_UA,
+        ),
+      ),
+  },
+  {
+    name: 'rss2json mirror',
+    load: async () => {
+      const body = await fetchText(
+        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(FEED_URL)}`,
+        BROWSER_UA,
+      );
+      const data = JSON.parse(body);
+      if (data.status !== 'ok' || !Array.isArray(data.items)) throw new Error('bad payload');
+      return data.items
+        .map((i: any) => ({
+          title: String(i.title ?? ''),
+          href: String(i.link ?? ''),
+          date: i.pubDate ? new Date(i.pubDate) : undefined,
+          blurb: String(i.description ?? '')
             .replace(/<[^>]+>/g, '')
             .trim()
             .slice(0, 200),
-        };
-      })
-      .filter((p) => p.title && p.href.startsWith('http'));
+        }))
+        .filter((p: Post) => p.title && p.href.startsWith('http'));
+    },
+  },
+];
 
-    if (posts.length === 0) throw new Error('feed parsed to zero items');
-    console.log(`[substack] loaded ${posts.length} posts from the live feed`);
-    return { posts, live: true };
-  } catch (err) {
-    console.warn(`[substack] feed unavailable (${err}); using fallback list`);
-    return { posts: FALLBACK_POSTS, live: false };
+export async function getPosts(): Promise<{ posts: Post[]; live: boolean }> {
+  for (const s of STRATEGIES) {
+    try {
+      const posts = await s.load();
+      if (posts.length === 0) throw new Error('parsed to zero items');
+      console.log(`[substack] loaded ${posts.length} posts via ${s.name}`);
+      return { posts, live: true };
+    } catch (err) {
+      console.warn(`[substack] ${s.name} failed: ${err}`);
+    }
   }
+  console.warn('[substack] all strategies failed; using fallback list');
+  return { posts: FALLBACK_POSTS, live: false };
 }
 
 export function formatDate(d?: Date): string {
